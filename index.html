@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DArk : Echo Sector - Engine Prototype</title>
+    <!-- External Style Sheet Link -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="game-container">
+    <canvas id="gameCanvas" width="960" height="600"></canvas>
+    
+    <!-- Real-time HUD Layer -->
+    <div id="hud-overlay">
+        <div>SECTOR: <span id="hud-sector">1</span></div>
+        <div>CREDITS: <span id="hud-credits">0</span></div>
+        <div>SCORE: <span id="hud-score">0</span></div>
+        <div>HEALTH: <div class="hud-bar"><div id="hp-fill"></div></div></div>
+        <div>WEAPON: <span id="hud-weapon">STANDARDIZED BLASTER</span></div>
+        <div style="font-size: 11px; margin-top: 5px; color:#555;">[P] Pause / Shop | Click to Shoot</div>
+    </div>
+
+    <!-- UI State Screen Overlay -->
+    <div id="screen-overlay">
+        <h1 id="overlay-title">DArk : Echo Sector</h1>
+        <p id="overlay-desc">Sub-surface tactical simulation environment overrun.</p>
+        <button id="action-btn" onclick="startGame()">INITIALIZE SYSTEM</button>
+    </div>
+
+    <!-- Marketplace Console Layout -->
+    <div id="shop-modal">
+        <h3 style="margin-top:0; text-align:center; border-bottom:1px solid #4af626; padding-bottom:5px;">MARKETPLACE CONSOLE</h3>
+        <div class="shop-item">
+            <span>Repair Core (+30 HP)</span>
+            <button class="shop-btn" onclick="buyUpgrade('heal', 25)">25 CR</button>
+        </div>
+        <div class="shop-item">
+            <span>Hyper-Heuristics (Speed Burst)</span>
+            <button class="shop-btn" onclick="buyUpgrade('speed', 40)">40 CR</button>
+        </div>
+        <div class="shop-item">
+            <span>Split-Fire Firing Array</span>
+            <button class="shop-btn" onclick="buyUpgrade('weapon', 75)">75 CR</button>
+        </div>
+        <div class="shop-item">
+            <span>Kinetic Amplification Matrix (+DMG)</span>
+            <button class="shop-btn" onclick="buyUpgrade('damage', 60)">60 CR</button>
+        </div>
+        <p style="text-align:center; font-size:12px; color:#666; margin-bottom:0;">Press [P] to exit marketplace and resume.</p>
+    </div>
+</div>
+
+<!-- Core Game Architecture Engine Script -->
+<script src="game.js"></script>
+</body>
+</html>
