@@ -5,7 +5,7 @@ window.player_position_y = 0;
 const single_global_state_object = {
     engineRunning: false,
     paused: false,
-    gameState: 'MENU', 
+    gameState: 'MENU',
     score: 0,
     credits: 0,
     currentSectorIndex: 1,
@@ -14,20 +14,21 @@ const single_global_state_object = {
     audioCtx: null,
     
     player: {
-        x: 100, y: 300, radius: 14,
-        speed: 4, 
+        x: 100, y: 300,
+        radius: 14,
+        speed: 4,
         hitsSustained: 0,
-        maxHitsAllowed: 5, 
-        damage: 20, fireRate: 250, lastFired: 0,
-        hasSplitFire: false, speedBoostActive: false,
-        speedBoostTimer: 0
+        maxHitsAllowed: 5,
+        damage: 20,
+        fireRate: 250,
+        lastFired: 0,
+        hasSplitFire: false
     },
     
-    bulletsHead: null, 
+    bulletsHead: null,
     enemies: [],
-    particles: [],
-    lootDrops: [],
     currentRoom: null,
+    
     input: { w: false, a: false, s: false, d: false, mouseX: 0, mouseY: 0, clicked: false }
 };
 
@@ -44,34 +45,42 @@ const AudioSynth = {
         const gain = ctx.createGain();
         osc.connect(gain);
         gain.connect(ctx.destination);
-
         const now = ctx.currentTime;
+        
         if (type === 'laser') {
-            osc.type = 'sawtooth'; osc.frequency.setValueAtTime(550, now);
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(550, now);
             osc.frequency.exponentialRampToValueAtTime(100, now + 0.12);
-            gain.gain.setValueAtTime(0.12, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+            gain.gain.setValueAtTime(0.12, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
             osc.start(now); osc.stop(now + 0.12);
         } else if (type === 'hit') {
-            osc.type = 'triangle'; osc.frequency.setValueAtTime(140, now);
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(140, now);
             osc.frequency.exponentialRampToValueAtTime(40, now + 0.15);
-            gain.gain.setValueAtTime(0.25, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+            gain.gain.setValueAtTime(0.25, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
             osc.start(now); osc.stop(now + 0.15);
         } else if (type === 'explosion') {
-            osc.type = 'square'; osc.frequency.setValueAtTime(90, now);
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(90, now);
             osc.frequency.exponentialRampToValueAtTime(20, now + 0.4);
-            gain.gain.setValueAtTime(0.35, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+            gain.gain.setValueAtTime(0.35, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
             osc.start(now); osc.stop(now + 0.4);
         } else if (type === 'pickup') {
-            osc.type = 'sine'; osc.frequency.setValueAtTime(440, now);
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(440, now);
             osc.frequency.exponentialRampToValueAtTime(880, now + 0.18);
-            gain.gain.setValueAtTime(0.15, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.18);
+            gain.gain.setValueAtTime(0.15, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.18);
             osc.start(now); osc.stop(now + 0.18);
         }
     }
 };
 
 function createBulletNode(x, y, vx, vy, isEnemy, damage) {
-    return { x, y, vx, vy, isEnemy, damage, radius: 4, bounces: 0, maxBounces: 2, prev: null, next: null };
+    return { x, y, vx, vy, isEnemy, damage, radius: 4, prev: null, next: null };
 }
 
 function appendBullet(node) {
@@ -104,6 +113,7 @@ const SAT = {
             const axis = { x: -edge.y, y: edge.x };
             const mag = Math.hypot(axis.x, axis.y);
             axis.x /= mag; axis.y /= mag;
+            
             const polyProj = this.projectPolygon(vertices, axis);
             const circleProj = this.projectCircle(cx, cy, radius, axis);
             const overlap = Math.min(polyProj.max, circleProj.max) - Math.max(polyProj.min, circleProj.min);
@@ -147,6 +157,7 @@ const SAT = {
 function generateProceduralRoom(sectorIndex) {
     const w = 960, h = 600;
     const room = { width: w, height: h, obstacles: [], door: { x: w - 30, y: h / 2 - 40, width: 20, height: 80, open: false } };
+    
     room.obstacles.push(SAT.getOmniBoxVertices(0, 0, w, 20));
     room.obstacles.push(SAT.getOmniBoxVertices(0, h - 20, w, 20));
     room.obstacles.push(SAT.getOmniBoxVertices(0, 0, 20, h));
@@ -155,10 +166,10 @@ function generateProceduralRoom(sectorIndex) {
 
     const iterations = 4;
     for (let i = 0; i < iterations; i++) {
-        const obsW = 70 + Math.floor(Math.random() * 50);
-        const obsH = 70 + Math.floor(Math.random() * 50);
-        const obsX = 250 + (i * 140);
-        const obsY = 120 + Math.floor(Math.random() * 200);
+        const obsW = 80 + Math.floor(Math.random() * 60);
+        const obsH = 80 + Math.floor(Math.random() * 60);
+        const obsX = 220 + (i * 160);
+        const obsY = 100 + Math.floor(Math.random() * 220);
         room.obstacles.push(SAT.getOmniBoxVertices(obsX, obsY, obsW, obsH));
     }
     return room;
@@ -171,11 +182,11 @@ const enemy_manager_singleton_controller_factory = {
         const types = ['HUNTER', 'DASH', 'EXPLOSIVE'];
         for (let i = 0; i < count; i++) {
             const type = types[i % types.length];
-            let ex = 400 + (i * 100);
-            let ey = 150 + (i * 80);
+            let ex = 450 + (i * 90);
+            let ey = 120 + (i * 70);
             single_global_state_object.enemies.push({
-                x: ex, y: ey, radius: 14, type: type, state: 'CHASE', health: 25 + (sectorIndex * 5),
-                speed: 1.5, lastActionTime: 0, targetAngle: 0, alertStatus: true
+                x: ex, y: ey, radius: 14, type: type, health: 25 + (sectorIndex * 5),
+                speed: 1.4 + (sectorIndex * 0.1), lastActionTime: 0, targetAngle: 0
             });
         }
     },
@@ -185,14 +196,14 @@ const enemy_manager_singleton_controller_factory = {
         
         if (bot.type === 'HUNTER') {
             bot.x += Math.cos(bot.targetAngle) * bot.speed; bot.y += Math.sin(bot.targetAngle) * bot.speed;
-            if (dist < 300 && now - bot.lastActionTime > 1200) {
+            if (dist < 350 && now - bot.lastActionTime > 1400) {
                 appendBullet(createBulletNode(bot.x, bot.y, Math.cos(bot.targetAngle) * 5, Math.sin(bot.targetAngle) * 5, true, 1));
                 AudioSynth.play('laser'); bot.lastActionTime = now;
             }
         } else if (bot.type === 'DASH') {
-            bot.x += Math.cos(bot.targetAngle) * bot.speed; bot.y += Math.sin(bot.targetAngle) * bot.speed;
+            bot.x += Math.cos(bot.targetAngle) * (bot.speed * 1.3); bot.y += Math.sin(bot.targetAngle) * (bot.speed * 1.3);
         } else if (bot.type === 'EXPLOSIVE') {
-            bot.x += Math.cos(bot.targetAngle) * (bot.speed * 1.2); bot.y += Math.sin(bot.targetAngle) * (bot.speed * 1.2);
+            bot.x += Math.cos(bot.targetAngle) * (bot.speed * 1.1); bot.y += Math.sin(bot.targetAngle) * (bot.speed * 1.1);
             if (dist < bot.radius + single_global_state_object.player.radius + 2) {
                 bot.health = 0;
                 single_global_state_object.player.hitsSustained++;
@@ -214,10 +225,9 @@ const enemy_manager_singleton_controller_factory = {
     }
 };
 
-
 function renderVisibilityPolygons(ctx, pX, pY, room) {
-    const rayCount = 120;
-    const maxVisionRange = 450;
+    const rayCount = 140;
+    const maxVisionRange = 480;
     const endpoints = [];
 
     for (let i = 0; i < rayCount; i++) {
@@ -238,23 +248,15 @@ function renderVisibilityPolygons(ctx, pX, pY, room) {
         endpoints.push({ x: pX + dx * currentRayDist, y: pY + dy * currentRayDist });
     }
 
-    ctx.save()
-    ctx.fillStyle = "#04060a";
-    ctx.fillRect(0, 0, room.width, room.height);
+    ctx.save();
+    ctx.fillStyle = "#04060a"; ctx.fillRect(0, 0, room.width, room.height);
 
-    ctx.beginPath();
-    ctx.moveTo(endpoints[0].x, endpoints[0].y);
+    ctx.beginPath(); ctx.moveTo(endpoints[0].x, endpoints[0].y);
     for (let i = 1; i < endpoints.length; i++) ctx.lineTo(endpoints[i].x, endpoints[i].y);
-    ctx.closePath();
-    ctx.clip();
+    ctx.closePath(); ctx.clip();
 
-    // Dark Floor Background Value Layer Inside Line-Of-Sight
-    ctx.fillStyle = "#080c14";
-    ctx.fillRect(0, 0, room.width, room.height);
-    
-    // Subtle Dark Tactical Radar Grid Configuration Lines
-    ctx.strokeStyle = "#111826";
-    ctx.lineWidth = 1;
+    ctx.fillStyle = "#070a14"; ctx.fillRect(0, 0, room.width, room.height);
+    ctx.strokeStyle = "#101626"; ctx.lineWidth = 1;
     for (let x = 0; x < room.width; x += 40) {
         ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, room.height); ctx.stroke();
     }
@@ -264,25 +266,73 @@ function renderVisibilityPolygons(ctx, pX, pY, room) {
     ctx.restore();
 }
 
+function renderGraphicsViewport(ctx, s) {
+    ctx.clearRect(0, 0, s.currentRoom.width, s.currentRoom.height);
+    renderVisibilityPolygons(ctx, s.player.x, s.player.y, s.currentRoom);
+
+
+    ctx.fillStyle = '#0b101d'; ctx.strokeStyle = '#25335c'; ctx.lineWidth = 2;
+    for (const wall of s.currentRoom.obstacles) {
+        ctx.beginPath(); ctx.moveTo(wall[0].x, wall[0].y);
+        for (let i = 1; i < wall.length; i++) ctx.lineTo(wall[i].x, wall[i].y);
+        ctx.closePath(); ctx.fill(); ctx.stroke();
+    }
+
+    const door = s.currentRoom.door;
+    ctx.fillStyle = door.open ? 'rgba(179, 255, 179, 0.15)' : 'rgba(255, 153, 187, 0.15)';
+    ctx.strokeStyle = door.open ? '#b3ffb3' : '#ff99bb';
+    ctx.fillRect(door.x, door.y, door.width, door.height); ctx.strokeRect(door.x, door.y, door.width, door.height);
+
+    let bNode = s.bulletsHead;
+    while (bNode !== null) {
+        ctx.fillStyle = bNode.isEnemy ? '#ff99bb' : '#b3ffb3';
+        ctx.beginPath(); ctx.arc(bNode.x, bNode.y, bNode.radius, 0, Math.PI * 2); ctx.fill();
+        bNode = bNode.next;
+    }
+
+    for (const enemy of s.enemies) {
+        ctx.fillStyle = enemy.type === 'EXPLOSIVE' ? '#ffe699' : '#b7baff';
+        ctx.beginPath(); ctx.arc(enemy.x, enemy.y, enemy.radius, 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = '#3a4b7c'; ctx.stroke();
+    }
+
+    ctx.fillStyle = '#b3ffb3'; ctx.beginPath(); ctx.arc(s.player.x, s.player.y, s.player.radius, 0, Math.PI * 2); ctx.fill();
+
+    const structuralHitsRemaining = Math.max(0, s.player.maxHitsAllowed - s.player.hitsSustained);
+    const calculatedPercentage = (structuralHitsRemaining / s.player.maxHitsAllowed) * 100;
+    
+    document.getElementById('hp-fill').style.width = `${calculatedPercentage}%`;
+    document.getElementById('hud-hits-left').innerText = `${structuralHitsRemaining} / ${s.player.maxHitsAllowed}`;
+    document.getElementById('hud-sector').innerText = s.currentSectorIndex;
+    document.getElementById('hud-credits').innerText = s.credits;
+    document.getElementById('hud-score').innerText = s.score;
+    document.getElementById('hud-weapon').innerText = s.player.hasSplitFire ? "SPLIT-ARRAY FLUX BLASTER" : "STANDARDIZED BLASTER";
+}
+
+
 function render_entities_and_update_state() {
     const s = single_global_state_object;
     if (!s.engineRunning || s.paused) return;
 
     const now = performance.now();
+    
     if (s.input.w) s.player.y -= s.player.speed;
     if (s.input.s) s.player.y += s.player.speed;
     if (s.input.a) s.player.x -= s.player.speed;
     if (s.input.d) s.player.x += s.player.speed;
+
+    window.player_position_x = s.player.x;
+    window.player_position_y = s.player.y;
 
     enemy_manager_singleton_controller_factory.resolveObstacleCollisions(s.player);
 
     if (s.input.clicked && now - s.player.lastFired > s.player.fireRate) {
         const pAngle = Math.atan2(s.input.mouseY - s.player.y, s.input.mouseX - s.player.x);
         if (s.player.hasSplitFire) {
-            appendBullet(createBulletNode(s.player.x, s.player.y, Math.cos(pAngle - 0.1) * 8, Math.sin(pAngle - 0.1) * 8, false, s.player.damage));
-            appendBullet(createBulletNode(s.player.x, s.player.y, Math.cos(pAngle + 0.1) * 8, Math.sin(pAngle + 0.1) * 8, false, s.player.damage));
+            appendBullet(createBulletNode(s.player.x, s.player.y, Math.cos(pAngle - 0.15) * 9, Math.sin(pAngle - 0.15) * 9, false, s.player.damage));
+            appendBullet(createBulletNode(s.player.x, s.player.y, Math.cos(pAngle + 0.15) * 9, Math.sin(pAngle + 0.15) * 9, false, s.player.damage));
         } else {
-            appendBullet(createBulletNode(s.player.x, s.player.y, Math.cos(pAngle) * 8, Math.sin(pAngle) * 8, false, s.player.damage));
+            appendBullet(createBulletNode(s.player.x, s.player.y, Math.cos(pAngle) * 9, Math.sin(pAngle) * 9, false, s.player.damage));
         }
         AudioSynth.play('laser'); s.player.lastFired = now;
     }
@@ -299,12 +349,8 @@ function render_entities_and_update_state() {
         if (!destroyed) {
             if (bNode.isEnemy) {
                 if (Math.hypot(s.player.x - bNode.x, s.player.y - bNode.y) < s.player.radius + bNode.radius) {
-                    s.player.hitsSustained++;
-                    AudioSynth.play('hit'); destroyed = true;
-                    if (s.player.hitsSustained >= s.player.maxHitsAllowed) {
-                        terminateEngineRun(false);
-                        return;
-                    }
+                    s.player.hitsSustained++; AudioSynth.play('hit'); destroyed = true;
+                    if (s.player.hitsSustained >= s.player.maxHitsAllowed) { terminateEngineRun(false); return; }
                 }
             } else {
                 for (let i = s.enemies.length - 1; i >= 0; i--) {
@@ -331,53 +377,11 @@ function render_entities_and_update_state() {
     if (s.enemies.length === 0 && !s.currentRoom.door.open) {
         s.currentRoom.door.open = true; AudioSynth.play('pickup');
     }
-    if (s.currentRoom.door.open && Math.hypot(s.player.x - s.currentRoom.door.x, s.player.y - s.currentRoom.door.y) < 30) {
+    if (s.currentRoom.door.open && Math.hypot(s.player.x - (s.currentRoom.door.x + 10), s.player.y - (s.currentRoom.door.y + 40)) < 35) {
         advanceSectorLevel();
     }
 
     renderGraphicsViewport(s.ctx, s);
-}
-
-function renderGraphicsViewport(ctx, s) {
-    ctx.clearRect(0, 0, s.currentRoom.width, s.currentRoom.height);
-    renderVisibilityPolygons(ctx, s.player.x, s.player.y, s.currentRoom);
-
-    ctx.fillStyle = '#0f1624'; ctx.strokeStyle = '#ff0055'; ctx.lineWidth = 2;
-    for (const wall of s.currentRoom.obstacles) {
-        ctx.beginPath(); ctx.moveTo(wall[0].x, wall[0].y);
-        for (let i = 1; i < wall.length; i++) ctx.lineTo(wall[i].x, wall[i].y);
-        ctx.closePath(); ctx.fill(); ctx.stroke();
-    }
-
-    const door = s.currentRoom.door;
-    ctx.fillStyle = door.open ? 'rgba(74, 246, 38, 0.2)' : 'rgba(255, 0, 85, 0.2)';
-    ctx.strokeStyle = door.open ? '#4af626' : '#ff0055';
-    ctx.fillRect(door.x, door.y, door.width, door.height); ctx.strokeRect(door.x, door.y, door.width, door.height);
-
-    let bNode = s.bulletsHead;
-    while (bNode !== null) {
-        ctx.fillStyle = bNode.isEnemy ? '#ff0055' : '#4af626';
-        ctx.beginPath(); ctx.arc(bNode.x, bNode.y, bNode.radius, 0, Math.PI * 2); ctx.fill();
-        bNode = bNode.next;
-    }
-
-    for (const enemy of s.enemies) {
-        ctx.fillStyle = enemy.type === 'EXPLOSIVE' ? '#ffaa00' : '#8822bb';
-        ctx.beginPath(); ctx.arc(enemy.x, enemy.y, enemy.radius, 0, Math.PI * 2); ctx.fill();
-        ctx.strokeStyle = '#ff0055'; ctx.stroke();
-    }
-
-    ctx.fillStyle = '#4af626'; ctx.beginPath(); ctx.arc(s.player.x, s.player.y, s.player.radius, 0, Math.PI * 2); ctx.fill();
-
-const structuralHitsRemaining = Math.max(0, s.player.maxHitsAllowed - s.player.hitsSustained);
-const calculatedPercentage = (structuralHitsRemaining / s.player.maxHitsAllowed) * 100;
-
-document.getElementById('hp-fill').style.width = `${calculatedPercentage}%`;
-document.getElementById('hud-hits-left').innerText = `${structuralHitsRemaining} / ${s.player.maxHitsAllowed}`;
-document.getElementById('hud-sector').innerText = s.currentSectorIndex;
-document.getElementById('hud-credits').innerText = s.credits;
-document.getElementById('hud-score').innerText = s.score;
-document.getElementById('hud-weapon').innerText = s.player.hasSplitFire ? "SPLIT-ARRAY FLUX BLASTER" : "STANDARDIZED BLASTER";
 }
 
 function main_game_loop() {
@@ -387,10 +391,11 @@ function main_game_loop() {
 function startGame() {
     AudioSynth.init(); const s = single_global_state_object;
     s.score = 0; s.credits = 0; s.currentSectorIndex = 1;
-    s.player.hitsSustained = 0; s.player.x = 80; s.player.y = 300; s.player.hasSplitFire = false;
+    s.player.hitsSustained = 0; s.player.x = 80; s.player.y = 300; s.player.speed = 4; s.player.damage = 20; s.player.hasSplitFire = false;
     s.bulletsHead = null; s.currentRoom = generateProceduralRoom(s.currentSectorIndex);
     enemy_manager_singleton_controller_factory.spawnPool(s.currentRoom, s.currentSectorIndex);
     s.gameState = 'PLAYING'; s.engineRunning = true; s.paused = false;
+    
     document.getElementById('screen-overlay').style.display = 'none';
     document.getElementById('shop-modal').style.display = 'none';
 }
@@ -412,7 +417,7 @@ function toggleEnginePause() {
 function buyUpgrade(type, cost) {
     const s = single_global_state_object; if (s.credits < cost) return;
     s.credits -= cost;
-    if (type === 'heal') s.player.hitsSustained = Math.max(0, s.player.hitsSustained - 1);
+    if (type === 'heal') s.player.hitsSustained = Math.max(0, s.player.hitsSustained - 2);
     else if (type === 'speed') s.player.speed = 5.5;
     else if (type === 'weapon') s.player.hasSplitFire = true;
     else if (type === 'damage') s.player.damage += 15;
@@ -431,19 +436,23 @@ function terminateEngineRun(isWinResult) {
     document.getElementById('shop-modal').style.display = 'none';
 
     if (isWinResult) {
-        title.innerText = "SIMULATION SUCCESS"; title.style.color = "#4af626";
-        title.style.textShadow = "0 0 15px #4af626"; desc.innerText = `All tactical sectors neutralized. Score: ${s.score}`;
+        title.innerText = "SIMULATION SUCCESS"; title.style.color = "#b3ffb3";
+        title.style.textShadow = "0 0 15px #b3ffb3"; desc.innerText = `All system matrix nodes neutralized. Score: ${s.score}`;
         btn.innerText = "RE-INITIALIZE SIMULATION";
     } else {
-        title.innerText = "MATRIX CRITICAL FAILURE"; title.style.color = "#ff0055";
-        title.style.textShadow = "0 0 15px #ff0055"; desc.innerText = `Shield core completely collapsed on Sector ${s.currentSectorIndex}. Final Vector Score: ${s.score}`;
+        title.innerText = "MATRIX CRITICAL FAILURE"; title.style.color = "#ff99bb";
+        title.style.textShadow = "0 0 15px #ff99bb"; desc.innerText = `Shield core completely collapsed on Sector ${s.currentSectorIndex}. Final Vector Score: ${s.score}`;
         btn.innerText = "REBOOT FRAMEWORK";
     }
 }
 
+// ==========================================================================
+/* Hardware Interface Event Input Hook Listeners */
+// ==========================================================================
 window.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('gameCanvas');
     single_global_state_object.canvas = canvas; single_global_state_object.ctx = canvas.getContext('2d');
+    
     window.addEventListener('keydown', e => {
         if (e.key === 'w' || e.key === 'W') single_global_state_object.input.w = true;
         if (e.key === 's' || e.key === 'S') single_global_state_object.input.s = true;
@@ -451,18 +460,22 @@ window.addEventListener('DOMContentLoaded', () => {
         if (e.key === 'd' || e.key === 'D') single_global_state_object.input.d = true;
         if (e.key === 'p' || e.key === 'P') toggleEnginePause();
     });
+    
     window.addEventListener('keyup', e => {
         if (e.key === 'w' || e.key === 'W') single_global_state_object.input.w = false;
         if (e.key === 's' || e.key === 'S') single_global_state_object.input.s = false;
         if (e.key === 'a' || e.key === 'A') single_global_state_object.input.a = false;
         if (e.key === 'd' || e.key === 'D') single_global_state_object.input.d = false;
     });
+    
     canvas.addEventListener('mousemove', e => {
         const rect = canvas.getBoundingClientRect();
         single_global_state_object.input.mouseX = e.clientX - rect.left;
         single_global_state_object.input.mouseY = e.clientY - rect.top;
     });
+    
     canvas.addEventListener('mousedown', () => { single_global_state_object.input.clicked = true; });
-    canvas.addEventListener('mouseup', () => { single_global_state_object.input.clicked = false; });
+    window.addEventListener('mouseup', () => { single_global_state_object.input.clicked = false; });
+    
     requestAnimationFrame(main_game_loop);
 });
