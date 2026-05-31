@@ -7,7 +7,8 @@ html, body {
     background-color: #060810;
     background-image: radial-gradient(circle at center, #0e1224 0%, #05070f 100%);
     font-family: 'Share Tech Mono', 'Courier New', monospace;
-    overflow: hidden; 
+    overflow: hidden;
+    
     display: flex;
     align-items: center;
     justify-content: center;
@@ -21,7 +22,7 @@ html, body {
     box-shadow: 0 0 50px rgba(24, 33, 67, 0.6);
     border-radius: 12px;
     padding: 10px;
-    gap: 15px; 
+    gap: 15px;
     align-items: stretch;
 }
 
@@ -47,7 +48,7 @@ canvas {
     padding: 20px;
     box-sizing: border-box;
     display: flex;
-    flex-direction: column; 
+    flex-direction: column;
     box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.5);
 }
 
@@ -124,7 +125,7 @@ canvas {
 #hp-fill {
     width: 100%;
     height: 100%;
-    background: #ff99bb;
+    background: #ff99bb; /* Light Pastel Pink */
     box-shadow: 0 0 8px #ff99bb;
     transition: width 0.2s ease;
 }
