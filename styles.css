@@ -2,7 +2,7 @@
 html, body {
     margin: 0;
     padding: 0;
-    background-color: #030407 !important; /* Pitch black-blue fallback */
+    background-color: #030407 !important;
     background-image: radial-gradient(circle at center, #0a0d14 0%, #020305 100%);
     color: #4af626;
     font-family: 'Share Tech Mono', 'Courier New', monospace;
@@ -13,11 +13,10 @@ html, body {
     justify-content: center;
     height: 100vh;
 }
-
 #game-container {
     position: relative;
     box-shadow: 0 0 35px rgba(255, 0, 85, 0.25);
-    border: 2px solid #ff0055; /* glowing neon pink framing around the map */
+    border: 2px solid #ff0055; 
     background: #010204;
     border-radius: 4px;
 }
@@ -34,15 +33,14 @@ canvas {
     font-size: 14px;
     letter-spacing: 1px;
     background: rgba(3, 4, 7, 0.85); 
-    backdrop-filter: blur(4px); /*frosted glass effect */
-    border: 2px solid #ff0055; /*neon Pink box outline */
+    backdrop-filter: blur(4px); 
+    border: 2px solid #ff0055; 
     box-shadow: 0 0 15px rgba(255, 0, 85, 0.4), inset 0 0 10px rgba(255, 0, 85, 0.2);
     padding: 12px 18px;
     border-radius: 4px;
     line-height: 1.6;
     z-index: 5;
 }
-
 .hud-bar {
     width: 120px;
     height: 10px;
@@ -60,8 +58,6 @@ canvas {
     width: 100%;
     transition: width 0.1s ease;
 }
-
-
 #screen-overlay {
     position: absolute;
     top: 0;
@@ -76,7 +72,6 @@ canvas {
     text-align: center;
     z-index: 10;
 }
-
 h1 { 
     font-size: 38px; 
     margin-bottom: 10px; 
@@ -84,12 +79,10 @@ h1 {
     color: #ff0055;
     text-shadow: 0 0 10px #ff0055, 0 0 20px rgba(255, 0, 85, 0.3); 
 }
-
 p { 
     margin: 5px 0; 
     color: #a2b0c2; 
 }
-
 button {
     background: #0f0006;
     color: #ff0055;
@@ -101,14 +94,13 @@ button {
     margin-top: 20px;
     box-shadow: 0 0 10px rgba(255, 0, 85, 0.2);
     border-radius: 4px;
+    letter-spacing: 1px;
 }
-
 button:hover {
     background: #ff0055;
     color: #030407;
     box-shadow: 0 0 20px #ff0055;
 }
-
 #shop-modal {
     display: none;
     position: absolute;
@@ -123,7 +115,6 @@ button:hover {
     z-index: 20;
     border-radius: 4px;
 }
-
 .shop-item {
     display: flex;
     justify-content: space-between;
@@ -132,7 +123,6 @@ button:hover {
     border-bottom: 1px dashed rgba(255, 0, 85, 0.2);
     padding-bottom: 6px;
 }
-
 .shop-btn {
     padding: 4px 10px;
     font-size: 12px;
