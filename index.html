@@ -3,58 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DArk : Echo Sector - Tactical Engine</title>
+    <title>DArk : Echo Sector</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div id="game-container">
-    <canvas id="gameCanvas" width="960" height="600"></canvas>
-    
-    <div id="hud-overlay">
-        <div class="hud-stat-row">SECTOR: <span id="hud-sector" class="neon-text-green">1</span></div>
-        <div class="hud-stat-row">CREDITS: <span id="hud-credits" class="neon-text-green">0</span></div>
-        <div class="hud-stat-row">SCORE: <span id="hud-score" class="neon-text-green">0</span></div>
-        <div class="hud-stat-row">
-            SHIELD STABILITY: 
-            <div class="hud-bar">
-                <div id="hp-fill"></div>
+    <div id="game-viewport-deck">
+        
+        <div id="canvas-arena-wrapper">
+            <canvas id="gameCanvas" width="960" height="600"></canvas>
+            
+            <div id="screen-overlay">
+                <h1 id="overlay-title">DArk : Echo Sector</h1>
+                <p id="overlay-desc">Sub-surface tactical simulation environment overrun.</p>
+                <button id="action-btn" onclick="startGame()">INITIALIZE MATRIX</button>
+            </div>
+            
+            <div id="shop-modal">
+                <h2 class="shop-title">MARKETPLACE CONSOLE</h2>
+                
+                <div class="shop-item">
+                    <span>Restore Shield Core (+1 Hit Cap)</span>
+                    <button class="shop-btn btn-heal" onclick="buyUpgrade('heal', 25)">25 CR</button>
+                </div>
+                <div class="shop-item">
+                    <span>Hyper-Heuristics (Speed Burst)</span>
+                    <button class="shop-btn btn-speed" onclick="buyUpgrade('speed', 40)">40 CR</button>
+                </div>
+                <div class="shop-item">
+                    <span>Split-Fire Firing Array</span>
+                    <button class="shop-btn btn-weapon" onclick="buyUpgrade('weapon', 75)">75 CR</button>
+                </div>
+                <div class="shop-item">
+                    <span>Kinetic Amplification Matrix</span>
+                    <button class="shop-btn btn-damage" onclick="buyUpgrade('damage', 60)">60 CR</button>
+                </div>
+                
+                <p class="shop-footer">Press [P] to exit marketplace and resume execution.</p>
             </div>
         </div>
-        <div class="hud-stat-row">HITS TOLERATED: <span id="hud-hits-left" class="neon-text-pink">5 / 5</span></div>
-        <div class="hud-stat-row">WEAPON MODULE: <span id="hud-weapon" class="neon-text-green">STANDARDIZED BLASTER</span></div>
-        <div class="hud-instruction">[P] Toggle Console Matrix Map | Mouse click to fire</div>
-    </div>
 
-    <div id="screen-overlay">
-        <h1 id="overlay-title">DArk : Echo Sector</h1>
-        <p id="overlay-desc">Sub-surface tactical simulation environment overrun.</p>
-        <button id="action-btn" onclick="startGame()">INITIALIZE MATRIX</button>
-    </div>
+        <div id="hud-sidebar-console">
+            <h3 class="console-header">SYSTEM METRICS</h3>
+            <div class="divider-line"></div>
+            
+            <div class="stat-module">
+                <span class="label">TACTICAL SECTOR</span>
+                <span id="hud-sector" class="value neon-blue">1</span>
+            </div>
+            
+            <div class="stat-module">
+                <span class="label">CREDIT BALANCE</span>
+                <span id="hud-credits" class="value neon-gold">0</span>
+            </div>
+            
+            <div class="stat-module">
+                <span class="label">CURRENT SCORE</span>
+                <span id="hud-score" class="value neon-green">0000</span>
+            </div>
 
-    <div id="shop-modal">
-        <h3 class="shop-title">MARKETPLACE CONSOLE</h3>
-        <div class="shop-item">
-            <span>Restore Shield Core (+1 Hit Cap)</span>
-            <button class="shop-btn" onclick="buyUpgrade('heal', 25)">25 CR</button>
-        </div>
-        <div class="shop-item">
-            <span>Hyper-Heuristics (Speed Burst)</span>
-            <button class="shop-btn" onclick="buyUpgrade('speed', 40)">40 CR</button>
-        </div>
-        <div class="shop-item">
-            <span>Split-Fire Firing Array</span>
-            <button class="shop-btn" onclick="buyUpgrade('weapon', 75)">75 CR</button>
-        </div>
-        <div class="shop-item">
-            <span>Kinetic Amplification Matrix</span>
-            <button class="shop-btn" onclick="buyUpgrade('damage', 60)">60 CR</button>
-        </div>
-        <p class="shop-footer">Press [P] to exit marketplace and resume execution.</p>
-    </div>
-</div>
+            <div class="stat-module complex">
+                <span class="label">SHIELD STABILITY</span>
+                <div class="hud-bar-container">
+                    <div id="hp-fill"></div>
+                </div>
+                <span id="hud-hits-left" class="value-sub">5 / 5</span>
+            </div>
+            
+            <div class="stat-module complex">
+                <span class="label">WEAPON MODULE CAPACITY</span>
+                <span id="hud-weapon" class="value-text">STANDARDIZED BLASTER</span>
+            </div>
 
-<script src="game.js"></script>
+            <div class="divider-line" style="margin-top: auto;"></div>
+            <div class="console-instructions">
+                <p>[P] Toggle Console Matrix Map</p>
+                <p>Mouse Click to Discharge Fire</p>
+            </div>
+        </div>
+    </div>
+    <script src="game.js"></script>
 </body>
 </html>
