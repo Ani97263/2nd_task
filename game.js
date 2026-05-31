@@ -369,15 +369,15 @@ function renderGraphicsViewport(ctx, s) {
 
     ctx.fillStyle = '#4af626'; ctx.beginPath(); ctx.arc(s.player.x, s.player.y, s.player.radius, 0, Math.PI * 2); ctx.fill();
 
-    const structuralHitsRemaining = Math.max(0, s.player.maxHitsAllowed - s.player.hitsSustained);
-    const calculatedPercentage = (structuralHitsRemaining / s.player.maxHitsAllowed) * 100;
-    
-    document.getElementById('hp-fill').style.width = `${calculatedPercentage}%`;
-    document.getElementById('hud-hits-left').innerText = `${structuralHitsRemaining} / ${s.player.maxHitsAllowed}`;
-    document.getElementById('hud-sector').innerText = s.currentSectorIndex;
-    document.getElementById('hud-credits').innerText = s.credits;
-    document.getElementById('hud-score').innerText = s.score;
-    document.getElementById('hud-weapon').innerText = s.player.hasSplitFire ? "SPLIT-ARRAY FLUX BLASTER" : "STANDARDIZED BLASTER";
+const structuralHitsRemaining = Math.max(0, s.player.maxHitsAllowed - s.player.hitsSustained);
+const calculatedPercentage = (structuralHitsRemaining / s.player.maxHitsAllowed) * 100;
+
+document.getElementById('hp-fill').style.width = `${calculatedPercentage}%`;
+document.getElementById('hud-hits-left').innerText = `${structuralHitsRemaining} / ${s.player.maxHitsAllowed}`;
+document.getElementById('hud-sector').innerText = s.currentSectorIndex;
+document.getElementById('hud-credits').innerText = s.credits;
+document.getElementById('hud-score').innerText = s.score;
+document.getElementById('hud-weapon').innerText = s.player.hasSplitFire ? "SPLIT-ARRAY FLUX BLASTER" : "STANDARDIZED BLASTER";
 }
 
 function main_game_loop() {
