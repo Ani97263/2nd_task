@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DArk : Echo Sector - Engine Prototype</title>
+    <!-- Sci-Fi Terminal Font Import -->
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -12,21 +13,24 @@
 <div id="game-container">
     <canvas id="gameCanvas" width="960" height="600"></canvas>
     
+    <!-- Real-time HUD Layer Over Canvas -->
     <div id="hud-overlay">
         <div>SECTOR: <span id="hud-sector">1</span></div>
         <div>CREDITS: <span id="hud-credits">0</span></div>
         <div>SCORE: <span id="hud-score">0</span></div>
         <div>HEALTH: <div class="hud-bar"><div id="hp-fill"></div></div></div>
         <div>WEAPON: <span id="hud-weapon">STANDARDIZED BLASTER</span></div>
-        <div style="font-size: 11px; margin-top: 8px; color:#777;">[P] Pause / Shop | Click to Shoot</div>
+        <div style="font-size: 11px; margin-top: 8px; color:#666;">[P] Pause / Shop | Click to Shoot</div>
     </div>
 
+    <!-- UI State Screen Overlay -->
     <div id="screen-overlay">
         <h1 id="overlay-title">DArk : Echo Sector</h1>
         <p id="overlay-desc">Sub-surface tactical simulation environment overrun.</p>
         <button id="action-btn" onclick="startGame()">INITIALIZE SYSTEM</button>
     </div>
 
+    <!-- Marketplace Console Layout -->
     <div id="shop-modal">
         <h3 style="margin-top:0; text-align:center; border-bottom:1px solid #ff0055; padding-bottom:5px; color:#ff0055; text-shadow: 0 0 5px #ff0055;">MARKETPLACE CONSOLE</h3>
         <div class="shop-item">
