@@ -15,7 +15,7 @@ html, body {
 
 #game-viewport-deck {
     display: flex;
-    flex-direction: row; /* Locks Canvas and HUD horizontally side-by-side */
+    flex-direction: row; 
     background: #030408;
     border: 3px solid #3a4b7c;
     box-shadow: 0 0 50px rgba(24, 33, 67, 0.6);
