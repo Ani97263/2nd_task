@@ -2,53 +2,84 @@
 html, body {
     margin: 0;
     padding: 0;
-    background-color: #030407 !important;
-    background-image: radial-gradient(circle at center, #0a0d14 0%, #020305 100%);
-    color: #4af626;
+    width: 100%;
+    height: 100%;
+    background-color: #020305 !important;
+    background-image: radial-gradient(circle at center, #0c0f17 0%, #020305 100%) !important;
     font-family: 'Share Tech Mono', 'Courier New', monospace;
     overflow: hidden;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh;
 }
+
 #game-container {
     position: relative;
-    box-shadow: 0 0 35px rgba(255, 0, 85, 0.25);
-    border: 2px solid #ff0055; 
-    background: #010204;
-    border-radius: 4px;
+    width: 960px;
+    height: 600px;
+    box-shadow: 0 0 40px rgba(255, 0, 85, 0.3);
+    border: 3px solid #ff0055;
+    background: #04060a;
+    border-radius: 6px;
+    overflow: hidden;
 }
 
 canvas {
     display: block;
+    background-color: #04060a;
 }
 
 #hud-overlay {
     position: absolute;
     top: 15px;
     left: 15px;
-    pointer-events: none; 
-    font-size: 14px;
+    pointer-events: none;
+    font-size: 13px;
     letter-spacing: 1px;
-    background: rgba(3, 4, 7, 0.85); 
-    backdrop-filter: blur(4px); 
-    border: 2px solid #ff0055; 
-    box-shadow: 0 0 15px rgba(255, 0, 85, 0.4), inset 0 0 10px rgba(255, 0, 85, 0.2);
-    padding: 12px 18px;
+    background: rgba(4, 6, 10, 0.9);
+    border: 2px solid #ff0055;
+    box-shadow: 0 0 20px rgba(255, 0, 85, 0.5), inset 0 0 10px rgba(255, 0, 85, 0.2);
+    padding: 14px 18px;
     border-radius: 4px;
-    line-height: 1.6;
     z-index: 5;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
 }
+
+.hud-stat-row {
+    color: #cfdbe8;
+    text-shadow: 1px 1px 2px #000;
+}
+
+.neon-text-green {
+    color: #4af626;
+    text-shadow: 0 0 5px rgba(74, 246, 38, 0.8);
+    font-weight: bold;
+}
+
+.neon-text-pink {
+    color: #ff0055;
+    text-shadow: 0 0 5px rgba(255, 0, 85, 0.8);
+    font-weight: bold;
+}
+
+.hud-instruction {
+    font-size: 11px;
+    margin-top: 4px;
+    color: #6a7b8c;
+}
+
 .hud-bar {
-    width: 120px;
+    width: 110px;
     height: 10px;
-    background: #110005;
+    background: #140107;
     border: 1px solid #ff0055;
     display: inline-block;
     margin-left: 8px;
     vertical-align: middle;
+    border-radius: 2px;
+    overflow: hidden;
 }
 
 #hp-fill {
@@ -56,76 +87,106 @@ canvas {
     background: #ff0055;
     box-shadow: 0 0 8px #ff0055;
     width: 100%;
-    transition: width 0.1s ease;
+    transition: width 0.15s ease;
 }
+
 #screen-overlay {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(2, 3, 5, 0.9);
+    background: rgba(3, 5, 8, 0.95);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
     z-index: 10;
+    transition: all 0.3s ease;
 }
+
 h1 { 
-    font-size: 38px; 
-    margin-bottom: 10px; 
-    letter-spacing: 4px; 
+    font-size: 42px; 
+    margin: 0 0 12px 0;
+    letter-spacing: 5px; 
     color: #ff0055;
-    text-shadow: 0 0 10px #ff0055, 0 0 20px rgba(255, 0, 85, 0.3); 
+    text-shadow: 0 0 10px #ff0055, 0 0 25px rgba(255, 0, 85, 0.4); 
 }
+
 p { 
-    margin: 5px 0; 
-    color: #a2b0c2; 
-}
-button {
-    background: #0f0006;
-    color: #ff0055;
-    border: 1px solid #ff0055;
-    padding: 12px 24px;
-    font-family: inherit;
+    margin: 0 0 20px 0; 
+    color: #8da1b5; 
     font-size: 16px;
-    cursor: pointer;
-    margin-top: 20px;
-    box-shadow: 0 0 10px rgba(255, 0, 85, 0.2);
-    border-radius: 4px;
     letter-spacing: 1px;
 }
+
+button {
+    background: #140007;
+    color: #ff0055;
+    border: 2px solid #ff0055;
+    padding: 12px 30px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 0 15px rgba(255, 0, 85, 0.3);
+    border-radius: 4px;
+    letter-spacing: 2px;
+    transition: all 0.2s ease;
+}
+
 button:hover {
     background: #ff0055;
-    color: #030407;
-    box-shadow: 0 0 20px #ff0055;
+    color: #020305;
+    box-shadow: 0 0 25px #ff0055;
 }
+
 #shop-modal {
     display: none;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 400px;
-    background: rgba(3, 4, 7, 0.95);
+    width: 420px;
+    background: rgba(4, 6, 10, 0.98);
     border: 2px solid #ff0055;
-    box-shadow: 0 0 30px rgba(255, 0, 85, 0.5);
-    padding: 20px;
+    box-shadow: 0 0 35px #ff0055, inset 0 0 15px rgba(255, 0, 85, 0.2);
+    padding: 25px;
     z-index: 20;
-    border-radius: 4px;
+    border-radius: 6px;
 }
+
+.shop-title {
+    margin-top: 0;
+    text-align: center;
+    border-bottom: 2px solid #ff0055;
+    padding-bottom: 8px;
+    color: #ff0055;
+    text-shadow: 0 0 8px #ff0055;
+    letter-spacing: 2px;
+}
+
 .shop-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: 12px 0;
+    margin: 16px 0;
     border-bottom: 1px dashed rgba(255, 0, 85, 0.2);
-    padding-bottom: 6px;
+    padding-bottom: 8px;
+    color: #a9bccf;
 }
+
 .shop-btn {
-    padding: 4px 10px;
-    font-size: 12px;
+    padding: 6px 14px;
+    font-size: 13px;
     margin-top: 0;
+}
+
+.shop-footer {
+    text-align: center;
+    font-size: 12px;
+    color: #58697a;
+    margin: 15px 0 0 0;
 }
 
