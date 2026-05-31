@@ -339,43 +339,11 @@ const enemy_manager_singleton_controller_factory = {
     }
 };
 
+
 function renderVisibilityPolygons(ctx, pX, pY, room) {
-    const rayCount = 180;
-    const maxVisionRange = 400;
-    const endpoints = [];
-
-    for (let i = 0; i < rayCount; i++) {
-        const angle = (i / rayCount) * Math.PI * 2;
-        const dx = Math.cos(angle);
-        const dy = Math.sin(angle);
-        
-        let currentRayDist = maxVisionRange;
-
-        for (const wall of room.obstacles) {
-            for (let j = 0; j < wall.length; j++) {
-                const p1 = wall[j];
-                const p2 = wall[(j + 1) % wall.length];
-                
-                const den = (p1.x - p2.x) * dy - (p1.y - p2.y) * dx;
-                if (den === 0) continue;
-
-                const t = ((p1.x - pX) * dy - (p1.y - pY) * dx) / den;
-                const u = -((p1.x - p2.x) * (p1.y - pY) - (p1.y - p2.y) * (p1.x - pX)) / den;
-
-                if (t >= 0 && t <= 1 && u >= 0) {
-                    if (u < currentRayDist) currentRayDist = u;
-                }
-            }
-        }
-
-        endpoints.push({
-            x: pX + dx * currentRayDist,
-            y: pY + dy * currentRayDist
-        });
-    }
 
     ctx.save();
-    ctx.fillStyle = "rgba(4, 8, 12, 0.95)";
+    ctx.fillStyle = "rgba(2, 3, 5, 0.98)"; 
     ctx.fillRect(0, 0, room.width, room.height);
 
     ctx.beginPath();
@@ -386,10 +354,10 @@ function renderVisibilityPolygons(ctx, pX, pY, room) {
     ctx.closePath();
     ctx.clip();
 
-    ctx.fillStyle = "#070c12";
+    ctx.fillStyle = "#05070b"; 
     ctx.fillRect(0, 0, room.width, room.height);
     
-    ctx.strokeStyle = "#0f1b26";
+    ctx.strokeStyle = "#0d111a"; 
     ctx.lineWidth = 1;
     for (let x = 0; x < room.width; x += 40) {
         ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, room.height); ctx.stroke();
