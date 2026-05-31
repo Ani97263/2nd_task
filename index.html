@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DArk : Echo Sector - Engine Prototype</title>
-    <!-- Sci-Fi Terminal Font Import -->
+    <title>DArk : Echo Sector - Tactical Engine</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -13,28 +12,31 @@
 <div id="game-container">
     <canvas id="gameCanvas" width="960" height="600"></canvas>
     
-    <!-- Real-time HUD Layer Over Canvas -->
     <div id="hud-overlay">
-        <div>SECTOR: <span id="hud-sector">1</span></div>
-        <div>CREDITS: <span id="hud-credits">0</span></div>
-        <div>SCORE: <span id="hud-score">0</span></div>
-        <div>HEALTH: <div class="hud-bar"><div id="hp-fill"></div></div></div>
-        <div>WEAPON: <span id="hud-weapon">STANDARDIZED BLASTER</span></div>
-        <div style="font-size: 11px; margin-top: 8px; color:#666;">[P] Pause / Shop | Click to Shoot</div>
+        <div class="hud-stat-row">SECTOR: <span id="hud-sector" class="neon-text-green">1</span></div>
+        <div class="hud-stat-row">CREDITS: <span id="hud-credits" class="neon-text-green">0</span></div>
+        <div class="hud-stat-row">SCORE: <span id="hud-score" class="neon-text-green">0</span></div>
+        <div class="hud-stat-row">
+            SHIELD STABILITY: 
+            <div class="hud-bar">
+                <div id="hp-fill"></div>
+            </div>
+        </div>
+        <div class="hud-stat-row">HITS TOLERATED: <span id="hud-hits-left" class="neon-text-pink">5 / 5</span></div>
+        <div class="hud-stat-row">WEAPON MODULE: <span id="hud-weapon" class="neon-text-green">STANDARDIZED BLASTER</span></div>
+        <div class="hud-instruction">[P] Toggle Console Matrix Map | Mouse click to fire</div>
     </div>
 
-    <!-- UI State Screen Overlay -->
     <div id="screen-overlay">
         <h1 id="overlay-title">DArk : Echo Sector</h1>
         <p id="overlay-desc">Sub-surface tactical simulation environment overrun.</p>
-        <button id="action-btn" onclick="startGame()">INITIALIZE SYSTEM</button>
+        <button id="action-btn" onclick="startGame()">INITIALIZE MATRIX</button>
     </div>
 
-    <!-- Marketplace Console Layout -->
     <div id="shop-modal">
-        <h3 style="margin-top:0; text-align:center; border-bottom:1px solid #ff0055; padding-bottom:5px; color:#ff0055; text-shadow: 0 0 5px #ff0055;">MARKETPLACE CONSOLE</h3>
+        <h3 class="shop-title">MARKETPLACE CONSOLE</h3>
         <div class="shop-item">
-            <span>Repair Core (+30 HP)</span>
+            <span>Restore Shield Core (+1 Hit Cap)</span>
             <button class="shop-btn" onclick="buyUpgrade('heal', 25)">25 CR</button>
         </div>
         <div class="shop-item">
@@ -46,10 +48,10 @@
             <button class="shop-btn" onclick="buyUpgrade('weapon', 75)">75 CR</button>
         </div>
         <div class="shop-item">
-            <span>Kinetic Amplification Matrix (+DMG)</span>
+            <span>Kinetic Amplification Matrix</span>
             <button class="shop-btn" onclick="buyUpgrade('damage', 60)">60 CR</button>
         </div>
-        <p style="text-align:center; font-size:12px; color:#666; margin-bottom:0;">Press [P] to exit marketplace and resume.</p>
+        <p class="shop-footer">Press [P] to exit marketplace and resume execution.</p>
     </div>
 </div>
 
