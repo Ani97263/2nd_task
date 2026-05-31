@@ -6,15 +6,14 @@ window.player_position_y = 0;
 const single_global_state_object = {
     engineRunning: false,
     paused: false,
-    gameState: 'MENU',
+    gameState: 'MENU', 
     score: 0,
     credits: 0,
     currentSectorIndex: 1,
     canvas: null,
     ctx: null,
     audioCtx: null,
-    
-    // Player Entity Structure
+   
     player: {
         x: 100, y: 100, radius: 14,
         speed: 4, health: 100, maxHealth: 100,
@@ -23,15 +22,17 @@ const single_global_state_object = {
         speedBoostTimer: 0
     },
     
-    
+   
     bulletsHead: null, 
     enemies: [],
     particles: [],
     lootDrops: [],
     
+    
     currentRoom: null,
     input: { w: false, a: false, s: false, d: false, mouseX: 0, mouseY: 0, clicked: false }
 };
+
 
 const AudioSynth = {
     init() {
@@ -80,7 +81,9 @@ const AudioSynth = {
     }
 };
 
-
+/**
+ * Doubly Linked List Node Mechanics for Projectile Management
+ */
 function createBulletNode(x, y, vx, vy, isEnemy, damage) {
     return {
         x: x, y: y, vx: vx, vy: vy,
@@ -107,6 +110,7 @@ function removeBulletNode(node) {
         single_global_state_object.bulletsHead = node.next;
     }
 }
+
 
 const SAT = {
     getOmniBoxVertices(x, y, w, h) {
@@ -187,6 +191,7 @@ const SAT = {
     }
 };
 
+
 function generateProceduralRoom(sectorIndex) {
     const w = 960, h = 600;
     const room = {
@@ -211,6 +216,7 @@ function generateProceduralRoom(sectorIndex) {
     }
     return room;
 }
+
 
 const enemy_manager_singleton_controller_factory = {
     spawnPool(room, sectorIndex) {
@@ -341,29 +347,71 @@ const enemy_manager_singleton_controller_factory = {
 
 
 function renderVisibilityPolygons(ctx, pX, pY, room) {
+    if (!room || !room.segments) return;
+
+    const endpoints = [];
+    room.segments.forEach(seg => {
+        endpoints.push(seg.p1, seg.p2);
+    });
+
+    const uniqueAngles = [];
+    endpoints.forEach(p => {
+        const angles = [
+            Math.atan2(p.y - pY, p.x - pX),
+            Math.atan2(p.y - pY, p.x - pX) - 0.0001,
+            Math.atan2(p.y - pY, p.x - pX) + 0.0001
+        ];
+        angles.forEach(a => {
+            if (!uniqueAngles.includes(a)) uniqueAngles.push(a);
+        });
+    });
+
+    const intersects = [];
+    uniqueAngles.forEach(angle => {
+        const dx = Math.cos(angle);
+        const dy = Math.sin(angle);
+        const ray = { a: { x: pX, y: pY }, b: { x: pX + dx, y: pY + dy } };
+
+        let closestIntersect = null;
+        room.segments.forEach(seg => {
+            const intersect = getIntersection(ray, seg);
+            if (!intersect) return;
+            if (!closestIntersect || intersect.param < closestIntersect.param) {
+                closestIntersect = intersect;
+            }
+        });
+
+        if (closestIntersect) {
+            closestIntersect.angle = angle;
+            intersects.push(closestIntersect);
+        }
+    });
+
+    intersects.sort((a, b) => a.angle - b.angle);
 
     ctx.save();
     ctx.fillStyle = "rgba(2, 3, 5, 0.98)"; 
     ctx.fillRect(0, 0, room.width, room.height);
 
-    ctx.beginPath();
-    ctx.moveTo(endpoints[0].x, endpoints[0].y);
-    for (let i = 1; i < endpoints.length; i++) {
-        ctx.lineTo(endpoints[i].x, endpoints[i].y);
-    }
-    ctx.closePath();
-    ctx.clip();
-
-    ctx.fillStyle = "#05070b"; 
-    ctx.fillRect(0, 0, room.width, room.height);
-    
-    ctx.strokeStyle = "#0d111a"; 
-    ctx.lineWidth = 1;
-    for (let x = 0; x < room.width; x += 40) {
-        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, room.height); ctx.stroke();
-    }
-    for (let y = 0; y < room.height; y += 40) {
-        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(room.width, y); ctx.stroke();
+    if (intersects.length > 0) {
+        ctx.beginPath();
+        ctx.moveTo(intersects[0].x, intersects[0].y);
+        for (let i = 1; i < intersects.length; i++) {
+            ctx.lineTo(intersects[i].x, intersects[i].y);
+        }
+        ctx.closePath();
+        ctx.clip();
+        ctx.fillStyle = "#05070b"; 
+        ctx.fillRect(0, 0, room.width, room.height);
+        
+        ctx.strokeStyle = "#0d111a"; 
+        ctx.lineWidth = 1;
+        for (let x = 0; x < room.width; x += 40) {
+            ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, room.height); ctx.stroke();
+        }
+        for (let y = 0; y < room.height; y += 40) {
+            ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(room.width, y); ctx.stroke();
+        }
     }
     ctx.restore();
 }
@@ -508,14 +556,11 @@ function render_entities_and_update_state() {
     save_game_state_every_frame();
 }
 
-/**
- * Rendering Viewport Pass
- */
+
 function renderGraphicsViewport(ctx, s) {
     ctx.clearRect(0, 0, s.currentRoom.width, s.currentRoom.height);
 
     renderVisibilityPolygons(ctx, s.player.x, s.player.y, s.currentRoom);
-
     ctx.fillStyle = '#1c3519';
     ctx.strokeStyle = '#4af626';
     ctx.lineWidth = 1.5;
